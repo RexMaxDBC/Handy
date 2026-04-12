@@ -1,1 +1,7 @@
-
+streamlit
+streamlit-webrtc
+ultralytics
+tensorflow
+opencv-python
+Pillow
+numpy
