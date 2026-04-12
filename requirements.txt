@@ -1,8 +1,8 @@
-streamlit>=1.38.0
-streamlit-webrtc>=0.47.0
-ultralytics>=8.2.0
-opencv-python-headless>=4.9.0
-Pillow>=10.4.0
-numpy>=1.26.0
-av>=10.0.0
-tensorflow>=2.15.0
+streamlit
+streamlit-webrtc
+ultralytics
+opencv-python-headless
+Pillow
+numpy
+av
+tensorflow
