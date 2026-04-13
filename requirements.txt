@@ -1,6 +1,8 @@
-libgl1
-libglib2.0-0
-libsm6
-libxrender1
-libfontconfig1
-libice6
+streamlit
+streamlit-webrtc
+ultralytics
+opencv-python-headless
+Pillow
+numpy
+av
+tensorflow
