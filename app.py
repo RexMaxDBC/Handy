@@ -18,7 +18,7 @@ with torch.serialization.safe_globals([ultralytics.nn.tasks.DetectionModel]):
 # YOLO laden
 @st.cache_resource
 def load_yolo():
-    model = YOLO("yolov8n.pt")
+    model = YOLO("yolov8n-2.pt")
     return model
 
 yolo_model = load_yolo()
