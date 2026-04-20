@@ -5,21 +5,17 @@ import cv2
 import numpy as np
 import torch
 import ultralytics
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-from ultralytics import YOLO
 
-# Stärkerer Fix für den UnpicklingError (PyTorch 2.6+)
+# ── WICHTIG: Fix MUSS VOR dem Import von YOLO stehen ──
 torch.serialization.add_safe_globals([ultralytics.nn.tasks.DetectionModel])
 
-# Zusätzlicher Kontext-Manager als Backup
-with torch.serialization.safe_globals([ultralytics.nn.tasks.DetectionModel]):
-    pass
+from ultralytics import YOLO
+from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 
-# YOLO laden
+# YOLOv8n laden
 @st.cache_resource
 def load_yolo():
-    model = YOLO("yolov8n-2.pt")
-    return model
+    return YOLO("yolov8n.pt")
 
 yolo_model = load_yolo()
 
@@ -42,13 +38,13 @@ class VideoProcessor:
 
         return av.VideoFrame.from_ndarray(annotated, format="bgr24")
 
-# ------------------- UI -------------------
+# ── Streamlit App ──
 st.set_page_config(page_title="FocusMate YOLO", layout="wide")
-st.title("🎯 FocusMate – Nur YOLOv8n Version")
+st.title("🎯 FocusMate – Handy-Erkennung mit YOLOv8n")
 
-st.info("YOLOv8n erkennt Handys automatisch (COCO Klasse 'cell phone').")
+st.info("YOLOv8n erkennt jedes Handy als 'cell phone' (Klasse 67).")
 
-# Timer
+# Timer Sidebar
 st.sidebar.header("Pomodoro Timer")
 col1, col2 = st.sidebar.columns(2)
 
@@ -67,8 +63,8 @@ if col2.button("☕ Pause (5 min)"):
 if st.sidebar.button("⏹️ Timer stoppen"):
     st.session_state.timer_running = False
 
+# Timer-Anzeige
 timer_placeholder = st.empty()
-
 if st.session_state.get("timer_running", False):
     elapsed = time.time() - st.session_state.get("timer_start", 0)
     remaining = st.session_state.get("timer_duration", 0) - elapsed
@@ -80,10 +76,10 @@ if st.session_state.get("timer_running", False):
         phase = "🟥 ARBEIT" if st.session_state.get("timer_phase") == "work" else "🟩 PAUSE"
         timer_placeholder.markdown(f"### {phase} – {mins:02d}:{secs:02d}")
 
-# Webcam
-st.subheader("📹 Live Webcam mit YOLO-Handy-Erkennung")
+# Webcam Stream
+st.subheader("📹 Live Webcam mit YOLO")
 webrtc_streamer(
-    key="yolo_focusmate",
+    key="focusmate_yolo",
     mode=WebRtcMode.SENDRECV,
     rtc_configuration=RTCConfiguration({"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}),
     video_processor_factory=VideoProcessor,
@@ -95,4 +91,4 @@ if st.session_state.get("timer_running", False):
     time.sleep(0.4)
     st.rerun()
 
-st.caption("Rote Warnung erscheint nur in der Arbeitsphase.")
+st.caption("Rote Warnung nur in der Arbeitsphase.")
