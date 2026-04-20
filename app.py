@@ -18,7 +18,7 @@ st.set_page_config(
 # YOLOv8n laden mit weights_only=False (umgeht den UnpicklingError)
 @st.cache_resource
 def load_yolo():
-    return YOLO("yolov8n.pt", task="detect")
+    return YOLO("yolov8n-2.pt", task="detect")
 
 yolo_model = load_yolo()
 
