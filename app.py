@@ -6,6 +6,15 @@ import numpy as np
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 from ultralytics import YOLO
 
+# ─────────────────────────────────────────────────────────────
+# WICHTIG: set_page_config muss ALS ERSTES kommen!
+# ─────────────────────────────────────────────────────────────
+st.set_page_config(
+    page_title="FocusMate YOLO",
+    layout="wide",
+    page_icon="🎯"
+)
+
 # YOLOv8n laden mit weights_only=False (umgeht den UnpicklingError)
 @st.cache_resource
 def load_yolo():
@@ -31,15 +40,6 @@ class VideoProcessor:
                         cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
         return av.VideoFrame.from_ndarray(annotated, format="bgr24")
-
-# ─────────────────────────────────────────────────────────────
-# WICHTIG: set_page_config muss ALS ERSTES kommen!
-# ─────────────────────────────────────────────────────────────
-st.set_page_config(
-    page_title="FocusMate YOLO",
-    layout="wide",
-    page_icon="🎯"
-)
 
 st.title("🎯 FocusMate – Handy-Erkennung mit YOLOv8n")
 st.info("YOLOv8n erkennt jedes Handy als 'cell phone' (Klasse 67). Rote Warnung nur in der Arbeitsphase.")
