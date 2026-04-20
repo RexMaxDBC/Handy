@@ -87,8 +87,9 @@ webrtc_streamer(
     async_processing=True,
 )
 
+# Timer automatisch aktualisieren - OHNE experimental_rerun
 if st.session_state.get("timer_running", False):
     time.sleep(0.4)
-    st.rerun()
+    st.rerun()  # Verwende st.rerun() statt experimental_rerun
 
 st.caption("Die App verwendet nur YOLOv8n (vortrainiert auf COCO).")
