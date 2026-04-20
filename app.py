@@ -36,7 +36,7 @@ class VideoProcessor:
         phone_detected = any(int(box.cls[0]) == 67 for box in results[0].boxes) if results[0].boxes else False
 
         if phone_detected and st.session_state.get("timer_phase") == "work":
-            cv2.putText(annotated, "HANDY ERKENNT! Leg es weg!", (10, 120),
+            cv2.putText(annotated, "HANDY ERKANNT! Leg es weg!", (10, 120),
                         cv2.FONT_HERSHEY_SIMPLEX, 1.5, (0, 0, 255), 3)
 
         return av.VideoFrame.from_ndarray(annotated, format="bgr24")
