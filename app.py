@@ -3,19 +3,14 @@ import time
 import av
 import cv2
 import numpy as np
-import torch
-import ultralytics
-
-# ── WICHTIG: Fix MUSS VOR dem Import von YOLO stehen ──
-torch.serialization.add_safe_globals([ultralytics.nn.tasks.DetectionModel])
-
-from ultralytics import YOLO
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
+from ultralytics import YOLO
 
-# YOLOv8n laden
+# YOLOv8n laden mit weights_only=False (umgeht den UnpicklingError)
 @st.cache_resource
 def load_yolo():
-    return YOLO("yolov8n.pt")
+    # weights_only=False ist für offizielle yolov8n.pt von Ultralytics sicher
+    return YOLO("yolov8n.pt", task="detect")
 
 yolo_model = load_yolo()
 
@@ -42,9 +37,9 @@ class VideoProcessor:
 st.set_page_config(page_title="FocusMate YOLO", layout="wide")
 st.title("🎯 FocusMate – Handy-Erkennung mit YOLOv8n")
 
-st.info("YOLOv8n erkennt jedes Handy als 'cell phone' (Klasse 67).")
+st.info("YOLOv8n erkennt jedes Handy als 'cell phone' (Klasse 67). Rote Warnung nur in der Arbeitsphase.")
 
-# Timer Sidebar
+# Timer
 st.sidebar.header("Pomodoro Timer")
 col1, col2 = st.sidebar.columns(2)
 
@@ -76,8 +71,8 @@ if st.session_state.get("timer_running", False):
         phase = "🟥 ARBEIT" if st.session_state.get("timer_phase") == "work" else "🟩 PAUSE"
         timer_placeholder.markdown(f"### {phase} – {mins:02d}:{secs:02d}")
 
-# Webcam Stream
-st.subheader("📹 Live Webcam mit YOLO")
+# Webcam
+st.subheader("📹 Live Webcam mit YOLO-Handy-Erkennung")
 webrtc_streamer(
     key="focusmate_yolo",
     mode=WebRtcMode.SENDRECV,
@@ -91,4 +86,4 @@ if st.session_state.get("timer_running", False):
     time.sleep(0.4)
     st.rerun()
 
-st.caption("Rote Warnung nur in der Arbeitsphase.")
+st.caption("Die App verwendet nur YOLOv8n (vortrainiert).")
